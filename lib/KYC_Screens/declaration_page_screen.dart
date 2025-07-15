@@ -17,6 +17,7 @@ class DeclarationPageScreen extends StatefulWidget {
   // final String recordedTime;
   // final String imagePath;
   final String aadhaarNumber;
+  final String lastSubmit;
   // final String latitude;
   // final String longitude;
   // final String address;
@@ -38,7 +39,8 @@ class DeclarationPageScreen extends StatefulWidget {
     // required this.inputFieldOneValue,
     // this.selectedDropdownValue,
     required this.ppoNumber,
-    this.hasJob, 
+    this.hasJob,
+    required this.lastSubmit,
   });
 
   @override
@@ -80,7 +82,7 @@ class _DeclarationPageScreenState extends State<DeclarationPageScreen> {
   }
 
   void _validateAndSubmit(BuildContext context) {
-    if (_formKey.currentState!.validate()) { 
+    if (_formKey.currentState!.validate()) {
       // Proceed with submission
       submitVideo(context);
     }
@@ -175,8 +177,7 @@ class _DeclarationPageScreenState extends State<DeclarationPageScreen> {
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse(
-            'https://nagpurpensioner.altwise.in/api/aadhar/SubmitAadharData'),
+        Uri.parse('https://nagpurpensioner.altwise.in/api/aadhar/submit'),
       );
 
       request.fields['isHavingJob'] = hasJob ?? "";
@@ -191,6 +192,7 @@ class _DeclarationPageScreenState extends State<DeclarationPageScreen> {
       request.fields['marriageDate'] = marriageDateController.text;
       request.fields['PPONumber'] = widget.ppoNumber;
       request.fields['AadhaarNumber'] = widget.aadhaarNumber;
+      request.fields['LastSubmit '] = "Submitted";
       // request.fields['Latitude'] = widget.latitude;
       // request.fields['Longitude'] = widget.longitude;
       // request.fields['Address'] = widget.address;

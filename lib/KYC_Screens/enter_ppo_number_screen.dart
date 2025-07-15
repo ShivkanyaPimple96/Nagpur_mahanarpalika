@@ -115,7 +115,7 @@ class _EnterMobileNumberScreenState extends State<EnterMobileNumberScreen> {
                     addresss: responseData['Addresss'] ?? '',
                     gender: responseData['Gender'] ?? '',
                     verificationStatus:
-                        responseData['VerificationStatus'] ?? '',
+                        responseData['VerificationStatus'] ?? '', 
                     bankName: responseData['BankName'] ?? '',
                   ),
                 ),

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,8 +15,9 @@ class PhotoClickKYCScreen extends StatefulWidget {
   final String addressEnter;
   final String gender;
   final String fullName;
-  final String frontImagePath;
-  final String backImagePath;
+  // final String frontImagePath;
+  // final String backImagePath;
+  final String lastSubmit;
 
   const PhotoClickKYCScreen({
     super.key,
@@ -27,8 +27,9 @@ class PhotoClickKYCScreen extends StatefulWidget {
     required this.addressEnter,
     required this.gender,
     required this.fullName,
-    required this.frontImagePath,
-    required this.backImagePath,
+    // required this.frontImagePath,
+    // required this.backImagePath,
+    required this.lastSubmit,
   });
 
   @override
@@ -164,7 +165,8 @@ class _PhotoClickKYCScreenState extends State<PhotoClickKYCScreen> {
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('YOUR_API_ENDPOINT_HERE'), // Replace with your API endpoint
+        Uri.parse(
+            'https://nagpurpensioner.altwise.in/api/aadhar/submit'), // Replace with your API endpoint
       );
 
       // Add all the required fields to your API request
@@ -313,6 +315,7 @@ class _PhotoClickKYCScreenState extends State<PhotoClickKYCScreen> {
             addressEnter: widget.addressEnter,
             gender: widget.gender,
             fullName: widget.fullName,
+            lastSubmit: "",
             // frontImagePath: widget.frontImagePath,
             // backImagePath: widget.backImagePath,
           ),

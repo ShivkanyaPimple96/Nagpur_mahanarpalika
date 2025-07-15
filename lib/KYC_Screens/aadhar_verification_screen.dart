@@ -55,7 +55,7 @@ class _AadharVerificationKYCScreenState
   bool isSubmittingOtpLoading = false;
   bool isVerificationSuccessful = false;
 
-   File? _frontImage;
+  File? _frontImage;
   File? _backImage;
 
   Future<void> verifyAadhar() async {
@@ -290,6 +290,7 @@ class _AadharVerificationKYCScreenState
                       addressEnter: widget.addressEnter,
                       gender: widget.gender,
                       fullName: widget.fullName,
+                      lastSubmit: "",
                     ),
                   ),
                 );
@@ -647,10 +648,10 @@ class _AadharVerificationKYCScreenState
                             addressEnter: widget.addressEnter,
                             gender: widget.gender,
                             fullName: widget.fullName,
-                             frontImagePath: _frontImage?.path ??
-                                '', // Provide empty string as default
-                            backImagePath: _backImage?.path ??
-                                '', 
+                            // frontImagePath: _frontImage?.path ??
+                            // Provide empty string as default
+                            // backImagePath: _backImage?.path ?? '',
+                            lastSubmit: "",
                           ),
                         ),
                       );

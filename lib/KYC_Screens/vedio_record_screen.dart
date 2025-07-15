@@ -22,6 +22,7 @@ class VideoRecordKYCScreen extends StatefulWidget {
   final String addressEnter;
   final String gender;
   final String fullName;
+  final String lastSubmit;
   //    final String frontImagePath;
   // final String backImagePath;
 
@@ -37,6 +38,7 @@ class VideoRecordKYCScreen extends StatefulWidget {
     required this.addressEnter,
     required this.gender,
     required this.fullName,
+    required this.lastSubmit,
   });
 
   @override
@@ -194,8 +196,9 @@ class _VideoRecordKYCScreenState extends State<VideoRecordKYCScreen> {
             gender: widget.gender,
             fullName: widget.fullName,
             isFrontCamera: isFrontCamera,
+            lastSubmit: "",
             // frontImagePath: widget.frontImagePath, // Pass front image path
-            // backImagePath: widget.backImagePath, 
+            // backImagePath: widget.backImagePath,
             // inputFieldOneValue: widget.inputFieldOneValue,
             // selectedDropdownValue: widget.selectedDropdownValue,
           ),

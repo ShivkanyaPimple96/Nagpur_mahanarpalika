@@ -17,6 +17,7 @@ class UploadAadharPhotos extends StatefulWidget {
   final String addressEnter;
   final String gender;
   final String fullName;
+  final String lastSubmit;
 
   const UploadAadharPhotos({
     super.key,
@@ -26,6 +27,7 @@ class UploadAadharPhotos extends StatefulWidget {
     required this.addressEnter,
     required this.gender,
     required this.fullName,
+    required this.lastSubmit,
   });
 
   @override
@@ -90,7 +92,8 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: Row(children: [
             Icon(Icons.check_circle_outline, color: Colors.green, size: 28),
             SizedBox(width: 10),
@@ -139,7 +142,8 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://nagpurpensioner.altwise.in/api/aadhar/SubmitAadharData'), // Update with your API endpoint
+        Uri.parse(
+            'https://nagpurpensioner.altwise.in/api/aadhar/submit'), // Update with your API endpoint
       );
 
       // Add all required fields to request
@@ -194,8 +198,9 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
               addressEnter: widget.addressEnter,
               gender: widget.gender,
               fullName: widget.fullName,
-              frontImagePath: compressedFront?.path ?? _frontImage!.path,
-              backImagePath: compressedBack?.path ?? _backImage!.path,
+              // frontImagePath: compressedFront?.path ?? _frontImage!.path,
+              // backImagePath: compressedBack?.path ?? _backImage!.path,
+              lastSubmit: "",
             ),
           ),
         );
@@ -208,7 +213,7 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
               children: [
                 Icon(Icons.error_outline, color: Colors.red),
                 SizedBox(width: 10),
-                Text('Submission Failed'),
+                Text('Note'),
               ],
             ),
             content: Column(
@@ -293,7 +298,7 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF551561),
+        backgroundColor: const Color.fromARGB(255, 27, 107, 212),
         title: Text(
           ' Upload Aadhar Card Photos',
           style: TextStyle(
@@ -361,7 +366,7 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
                   style: ElevatedButton.styleFrom(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 35, vertical: 8),
-                    backgroundColor: const Color(0xFF551561),
+                    backgroundColor: const Color.fromARGB(255, 27, 107, 212),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -407,7 +412,7 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
             ),
           ],
           border: Border.all(
-            color: Color(0xFFEAAFEA),
+            color: Color(0xFF92B7F7),
             width: 1.5,
           ),
         ),
@@ -463,7 +468,6 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
     );
   }
 }
-
 
 // import 'package:flutter/material.dart';
 // import 'package:image_picker/image_picker.dart';
