@@ -1,14 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:path/path.dart' as path;
-import 'dart:io';
-
+import 'package:image_picker/image_picker.dart';
 import 'package:nagpur_mahanagarpalika/KYC_Screens/capture_photo_screen.dart';
+import 'package:path/path.dart' as path;
 
 class UploadAadharPhotos extends StatefulWidget {
   final String aadhaarNumber;
@@ -84,53 +83,220 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
     }
   }
 
+  // Future<void> _submitAadharPhotos() async {
+  //   if (_frontImage == null || _backImage == null) return;
+
+  //   // Show confirmation dialog first
+  //   bool? confirmSubmission = await showDialog<bool>(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         shape:
+  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+  //         title: Row(children: [
+  //           Icon(Icons.check_circle_outline, color: Colors.green, size: 28),
+  //           SizedBox(width: 10),
+  //           Text('Confirm Submission',
+  //               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+  //         ]),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Divider(thickness: 2.5),
+  //             Text(
+  //               'Are you sure you want to submit this Aadhar photos?\nतुम्हाला खात्री आहे की तुम्ही हे आधार फोटो सबमिट करू इच्छिता??',
+  //               style: TextStyle(fontSize: 16),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             Divider(thickness: 2.5),
+  //           ],
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: Text('Cancel', style: TextStyle(color: Colors.red)),
+  //             onPressed: () => Navigator.of(context).pop(false),
+  //           ),
+  //           TextButton(
+  //             child: Text('Submit'),
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: Colors.green,
+  //               shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(12.0)),
+  //             ),
+  //             onPressed: () => Navigator.of(context).pop(true),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+
+  //   if (confirmSubmission != true) return;
+
+  //   setState(() => _isCompressing = true);
+
+  //   try {
+  //     // Compress images again before submission
+  //     final compressedFront = await _compressImage(_frontImage!);
+  //     final compressedBack = await _compressImage(_backImage!);
+
+  //     var request = http.MultipartRequest(
+  //       'POST',
+  //       Uri.parse(
+  //           'https://nagpurpensioner.altwise.in/api/aadhar/submit'), // Update with your API endpoint
+  //     );
+
+  //     // Add all required fields to request
+  //     request.fields['AadhaarNumber'] = widget.aadhaarNumber;
+  //     request.fields['PPONumber'] = widget.ppoNumber;
+  //     request.fields['MobileNumber'] = widget.mobileNumber;
+  //     request.fields['Address'] = widget.addressEnter;
+  //     request.fields['Gender'] = widget.gender;
+  //     request.fields['FullName'] = widget.fullName;
+
+  //     // Add front and back images
+  //     request.files.add(await http.MultipartFile.fromPath(
+  //       'AadharFront',
+  //       compressedFront?.path ?? _frontImage!.path,
+  //       filename: path.basename(compressedFront?.path ?? _frontImage!.path),
+  //       contentType: MediaType('image', 'jpeg'),
+  //     ));
+
+  //     request.files.add(await http.MultipartFile.fromPath(
+  //       'AadharBack',
+  //       compressedBack?.path ?? _backImage!.path,
+  //       filename: path.basename(compressedBack?.path ?? _backImage!.path),
+  //       contentType: MediaType('image', 'jpeg'),
+  //     ));
+
+  //     // Debug print request details
+  //     print('Request fields: ${request.fields}');
+  //     print('Request files:');
+  //     for (var file in request.files) {
+  //       print(' - ${file.field}: ${file.filename}');
+  //     }
+
+  //     // Send the request
+  //     var response = await request.send().timeout(Duration(seconds: 240));
+
+  //     // Read response
+  //     String responseBody = await response.stream.bytesToString();
+  //     print('Response status: ${response.statusCode}');
+  //     print('Response body: $responseBody');
+
+  //     if (!mounted) return;
+
+  //     if (response.statusCode == 200) {
+  //       // Navigate to next screen on success
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => PhotoClickKYCScreen(
+  //             aadhaarNumber: widget.aadhaarNumber,
+  //             ppoNumber: widget.ppoNumber,
+  //             mobileNumber: widget.mobileNumber,
+  //             addressEnter: widget.addressEnter,
+  //             gender: widget.gender,
+  //             fullName: widget.fullName,
+  //             // frontImagePath: compressedFront?.path ?? _frontImage!.path,
+  //             // backImagePath: compressedBack?.path ?? _backImage!.path,
+  //             lastSubmit: "",
+  //           ),
+  //         ),
+  //       );
+  //     } else {
+  //       // Show error in dialog
+  //       await showDialog(
+  //         context: context,
+  //         builder: (context) => AlertDialog(
+  //           title: Row(
+  //             children: [
+  //               Icon(Icons.error_outline, color: Colors.red),
+  //               SizedBox(width: 10),
+  //               Text('Note'),
+  //             ],
+  //           ),
+  //           content: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               Text(
+  //                 'Failed to submit Aadhar photos. Please try again.\n'
+  //                 'आधार फोटो सबमिट करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.',
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //               SizedBox(height: 10),
+  //             ],
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               child: Text('OK'),
+  //               onPressed: () => Navigator.of(context).pop(),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     }
+  //   } on TimeoutException {
+  //     if (!mounted) return;
+  //     await showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Row(
+  //           children: [
+  //             Icon(Icons.timer_off, color: Colors.orange),
+  //             SizedBox(width: 10),
+  //             Text('Request Timeout'),
+  //           ],
+  //         ),
+  //         content: Text(
+  //           'The request timed out. Please check your internet connection and try again.\n'
+  //           'विनंतीची मुदत संपली. कृपया तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.',
+  //           textAlign: TextAlign.center,
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: Text('OK'),
+  //             onPressed: () => Navigator.of(context).pop(),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     if (!mounted) return;
+  //     await showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Row(
+  //           children: [
+  //             Icon(Icons.error_outline, color: Colors.red),
+  //             SizedBox(width: 10),
+  //             Text('Error'),
+  //           ],
+  //         ),
+  //         content: Text(
+  //           'Please check your internet connection\n कृपया तुमचे इंटरनेट कनेक्शन तपासा.',
+  //           textAlign: TextAlign.center,
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: Text('OK'),
+  //             onPressed: () => Navigator.of(context).pop(),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //     print('Error during submission: $e');
+  //   } finally {
+  //     if (mounted) {
+  //       setState(() => _isCompressing = false);
+  //     }
+  //   }
+  // }
+
   Future<void> _submitAadharPhotos() async {
     if (_frontImage == null || _backImage == null) return;
 
     // Show confirmation dialog first
-    bool? confirmSubmission = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          title: Row(children: [
-            Icon(Icons.check_circle_outline, color: Colors.green, size: 28),
-            SizedBox(width: 10),
-            Text('Confirm Submission',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          ]),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Divider(thickness: 2.5),
-              Text(
-                'Are you sure you want to submit this Aadhar photos?\nतुम्हाला खात्री आहे की तुम्ही हे आधार फोटो सबमिट करू इच्छिता??',
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              Divider(thickness: 2.5),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('Cancel', style: TextStyle(color: Colors.red)),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            TextButton(
-              child: Text('Submit'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-              ),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        );
-      },
-    );
-
+    bool? confirmSubmission = await _showConfirmationDialog();
     if (confirmSubmission != true) return;
 
     setState(() => _isCompressing = true);
@@ -142,17 +308,18 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse(
-            'https://nagpurpensioner.altwise.in/api/aadhar/submit'), // Update with your API endpoint
+        Uri.parse('https://nagpurpensioner.altwise.in/api/aadhar/submit'),
       );
 
       // Add all required fields to request
-      request.fields['AadhaarNumber'] = widget.aadhaarNumber;
-      request.fields['PPONumber'] = widget.ppoNumber;
-      request.fields['MobileNumber'] = widget.mobileNumber;
-      request.fields['Address'] = widget.addressEnter;
-      request.fields['Gender'] = widget.gender;
-      request.fields['FullName'] = widget.fullName;
+      request.fields.addAll({
+        'AadhaarNumber': widget.aadhaarNumber,
+        'PPONumber': widget.ppoNumber,
+        'MobileNumber': widget.mobileNumber,
+        'Address': widget.addressEnter,
+        'Gender': widget.gender,
+        'FullName': widget.fullName,
+      });
 
       // Add front and back images
       request.files.add(await http.MultipartFile.fromPath(
@@ -170,127 +337,154 @@ class _UploadAadharPhotosState extends State<UploadAadharPhotos> {
       ));
 
       // Debug print request details
-      print('Request fields: ${request.fields}');
-      print('Request files:');
-      for (var file in request.files) {
-        print(' - ${file.field}: ${file.filename}');
-      }
+      debugPrint('Request fields: ${request.fields}');
+      debugPrint(
+          'Request files: ${request.files.map((f) => '${f.field}: ${f.filename}')}');
 
       // Send the request
-      var response = await request.send().timeout(Duration(seconds: 240));
-
-      // Read response
+      var response = await request.send().timeout(const Duration(seconds: 240));
       String responseBody = await response.stream.bytesToString();
-      print('Response status: ${response.statusCode}');
-      print('Response body: $responseBody');
+      debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: $responseBody');
 
       if (!mounted) return;
 
       if (response.statusCode == 200) {
         // Navigate to next screen on success
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PhotoClickKYCScreen(
-              aadhaarNumber: widget.aadhaarNumber,
-              ppoNumber: widget.ppoNumber,
-              mobileNumber: widget.mobileNumber,
-              addressEnter: widget.addressEnter,
-              gender: widget.gender,
-              fullName: widget.fullName,
-              // frontImagePath: compressedFront?.path ?? _frontImage!.path,
-              // backImagePath: compressedBack?.path ?? _backImage!.path,
-              lastSubmit: "",
-            ),
-          ),
-        );
+        _navigateToKYCScreen();
       } else {
-        // Show error in dialog
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Row(
-              children: [
-                Icon(Icons.error_outline, color: Colors.red),
-                SizedBox(width: 10),
-                Text('Note'),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Failed to submit Aadhar photos. Please try again.\n'
-                  'आधार फोटो सबमिट करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.',
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 10),
-              ],
-            ),
-            actions: [
-              TextButton(
-                child: Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
+        await _showErrorDialog(
+          'Failed to submit Aadhar photos. Please try again.\n'
+          'आधार फोटो सबमिट करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.',
         );
       }
     } on TimeoutException {
       if (!mounted) return;
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.timer_off, color: Colors.orange),
-              SizedBox(width: 10),
-              Text('Request Timeout'),
-            ],
-          ),
-          content: Text(
-            'The request timed out. Please check your internet connection and try again.\n'
-            'विनंतीची मुदत संपली. कृपया तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.',
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+      await _showErrorDialog(
+        'The request timed out. Please check your internet connection and try again.\n'
+        'विनंतीची मुदत संपली. कृपया तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.',
+        title: 'Request Timeout',
       );
     } catch (e) {
       if (!mounted) return;
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.error_outline, color: Colors.red),
-              SizedBox(width: 10),
-              Text('Error'),
-            ],
-          ),
-          content: Text(
-            'Please check your internet connection\n कृपया तुमचे इंटरनेट कनेक्शन तपासा.',
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+      await _showErrorDialog(
+        'Please check your internet connection\n कृपया तुमचे इंटरनेट कनेक्शन तपासा.',
       );
-      print('Error during submission: $e');
+      debugPrint('Error during submission: $e');
     } finally {
       if (mounted) {
         setState(() => _isCompressing = false);
       }
     }
+  }
+
+  Future<bool?> _showConfirmationDialog() async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          title: Row(children: [
+            const Icon(Icons.check_circle_outline,
+                color: Colors.green, size: 28),
+            const SizedBox(width: 10),
+            Text('Note',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          ]),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Divider(thickness: 2.5),
+              Text(
+                'Are you sure you want to submit this Aadhar photos?\nतुम्हाला खात्री आहे की तुम्ही हे आधार फोटो सबमिट करू इच्छिता??',
+                style: const TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              const Divider(thickness: 2.5),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0)),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showErrorDialog(
+    String message, {
+    IconData icon = Icons.error_outline,
+    Color iconColor = Colors.red,
+    String title = 'Note',
+  }) async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        title: Row(
+          children: [
+            Icon(icon, color: iconColor),
+            const SizedBox(width: 10),
+            Text(title),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Divider(thickness: 2.5),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const Divider(thickness: 2.5),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navigateToKYCScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoClickKYCScreen(
+          aadhaarNumber: widget.aadhaarNumber,
+          ppoNumber: widget.ppoNumber,
+          mobileNumber: widget.mobileNumber,
+          addressEnter: widget.addressEnter,
+          gender: widget.gender,
+          fullName: widget.fullName,
+          lastSubmit: "",
+        ),
+      ),
+    );
   }
 
   @override

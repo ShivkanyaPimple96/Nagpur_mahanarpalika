@@ -53,37 +53,6 @@ class _PensionerDetailesScreenState extends State<PensionerDetailesScreen> {
     _fetchPensionerDetails();
   }
 
-  // Future<void> _fetchPensionerDetails() async {
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse(
-  //           'https://nagpurpensioner.altwise.in/api/aadhar/GetUserDetails?PPONumber=${widget.ppoNumber}'),
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final responseData = json.decode(response.body);
-  //       setState(() {
-  //         _storedAadhar = responseData['AadhaarNumber'] ?? '';
-  //         _storedAddress = responseData['Address'] ?? '';
-  //         _storedGender = responseData['Gender'] ?? '';
-  //         _aadharController.text = _storedAadhar ?? '';
-  //         _addressController.text = _storedAddress ?? '';
-  //         _selectedGender = _storedGender;
-  //         _dataLoaded = true;
-  //       });
-  //     } else {
-  //       setState(() {
-  //         _dataLoaded = true;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching details: $e');
-  //     setState(() {
-  //       _dataLoaded = true;
-  //     });
-  //   }
-  // }
-
   _fetchPensionerDetails() async {
     try {
       final response = await http.get(
@@ -211,7 +180,8 @@ class _PensionerDetailesScreenState extends State<PensionerDetailesScreen> {
         );
       } else {
         Fluttertoast.showToast(
-          msg: responseData['Message'] ?? 'Failed to update details',
+          msg: responseData['Message'] ??
+              'Failed to submit details\n डेटा सबमिटकरण्यात अयशस्वी',
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,
@@ -224,7 +194,9 @@ class _PensionerDetailesScreenState extends State<PensionerDetailesScreen> {
       });
 
       Fluttertoast.showToast(
-        msg: 'Error: ${e.toString()}',
+        // msg: 'Error: ${e.toString()}',
+        msg:
+            'Note: Please check your internet connection\nकृपया तुमचे इंटरनेट कनेक्शन तपासा.',
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.red,
@@ -553,7 +525,7 @@ class _PensionerDetailesScreenState extends State<PensionerDetailesScreen> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(30),
                                       ),
-                                      padding: const EdgeInsets.symmetric( 
+                                      padding: const EdgeInsets.symmetric(
                                           horizontal: 40, vertical: 10),
                                     ),
                                     child: const Text(

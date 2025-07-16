@@ -55,9 +55,6 @@ class _AadharVerificationKYCScreenState
   bool isSubmittingOtpLoading = false;
   bool isVerificationSuccessful = false;
 
-  File? _frontImage;
-  File? _backImage;
-
   Future<void> verifyAadhar() async {
     try {
       setState(() {
@@ -95,13 +92,18 @@ class _AadharVerificationKYCScreenState
       } else {
         final responseBody = await response.transform(utf8.decoder).join();
         final Map<String, dynamic> errorData = json.decode(responseBody);
+        // await showErrorDialog(
+        //     'Failed to verify aadhar number. Please check your aadhar number is correct.\nआधार क्रमांकाची पडताळणी करण्यात अयशस्वी तुमचा आधार क्रमांक तपासा',
+        //     shouldNavigate: true);
         await showErrorDialog(
-            'Failed to verify Aadhar number Check Your Aadhar Number. ${errorData['message'] ?? ''}\nआधार क्रमांकाची पडताळणी करण्यात अयशस्वी तुमचा आधार क्रमांक तपासा',
+            'Failed to verify aadhar number. Please check your aadhar number is correct.\nआधार क्रमांकाची पडताळणी करण्यात अयशस्वी तुमचा आधार क्रमांक तपासा',
             shouldNavigate: true);
       }
     } catch (error) {
       print('Exception in verifyAadhar: $error');
-      await showErrorDialog('An error occurred: $error');
+      await showErrorDialog
+          // ('An error occurred: $error');
+          ('Note: Please check your internet connection\nकृपया तुमचे इंटरनेट कनेक्शन तपासा.');
     } finally {
       if (mounted) {
         setState(() {
@@ -162,13 +164,16 @@ class _AadharVerificationKYCScreenState
       } else {
         final responseBody = await response.transform(utf8.decoder).join();
         final Map<String, dynamic> errorData = json.decode(responseBody);
-        await showErrorDialog(
-            'Failed to verify OTP, Please check your OTP is correct. Otp already generated for this aadhaar, please try after some time. ${errorData['message'] ?? ''}\nOTP पडताळणी करण्यात अयशस्वी,कृपया तुमचा OTP बरोबर आहे का ते तपासा\nया आधारसाठी ओटीपी आधीच तयार केला आहे, कृपया काही वेळाने प्रयत्न करा.',
-            shouldNavigate: true);
+        await showErrorDialog('Please Enter Correct OTP\n कृपया योग्य OTP टाका',
+            shouldNavigateToUploadAadhar: true);
+        // await showErrorDialog(
+        //     'Failed to submit OTP. ${errorData['message'] ?? ''}\nOTP सबमिट करण्यात अयशस्वी');
       }
     } catch (error) {
       print('Exception in submitOtp: $error');
-      await showErrorDialog('An error occurred: $error');
+      await showErrorDialog
+          // ('An error occurred: $error');
+          ('Note: Please check your internet connection\nकृपया तुमचे इंटरनेट कनेक्शन तपासा.');
     } finally {
       if (mounted) {
         setState(() {
@@ -229,8 +234,83 @@ class _AadharVerificationKYCScreenState
     );
   }
 
+  // Future<void> showErrorDialog(String message,
+  //     {bool shouldNavigate = false}) async {
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(20.0),
+  //         ),
+  //         title: const Row(
+  //           children: [
+  //             SizedBox(width: 10),
+  //             Text(
+  //               'Note',
+  //               style: TextStyle(
+  //                 fontSize: 20,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             const Divider(thickness: 2.5),
+  //             Text(
+  //               message,
+  //               style: const TextStyle(fontSize: 16),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             const Divider(thickness: 2.5),
+  //           ],
+  //         ),
+  //         actions: <Widget>[
+  //           ElevatedButton(
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: Colors.green,
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(12.0),
+  //               ),
+  //             ),
+  //             onPressed: () {
+  //               Navigator.of(context).pop(); // Close the dialog
+
+  //               if (shouldNavigate) {
+  //                 // Go back until the 3rd screen from the top (current screen is 0, previous is 1, etc.)
+  //                 int count = 0;
+  //                 Navigator.of(context).popUntil((_) => count++ >= 1);
+  //               }
+
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => UploadAadharPhotos(
+  //                     aadhaarNumber: widget.aadharNumber,
+  //                     ppoNumber: widget.ppoNumber,
+  //                     mobileNumber: widget.mobileNumber,
+  //                     addressEnter: widget.addressEnter,
+  //                     gender: widget.gender,
+  //                     fullName: widget.fullName,
+  //                     lastSubmit: "",
+  //                   ),
+  //                 ),
+  //               );
+  //             },
+  //             child: const Text('Ok', style: TextStyle(color: Colors.white)),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   Future<void> showErrorDialog(String message,
-      {bool shouldNavigate = false}) async {
+      {bool shouldNavigate = false,
+      bool shouldNavigateToUploadAadhar = false}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -266,34 +346,34 @@ class _AadharVerificationKYCScreenState
           actions: <Widget>[
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.green,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),
               ),
               onPressed: () {
-                // Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Close the dialog
 
-                // if (shouldNavigate) {
-                //   // Go back until the 3rd screen from the top (current screen is 0, previous is 1, etc.)
-                //   int count = 0;
-                //   Navigator.of(context).popUntil((_) => count++ >= 1);
-                // }
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UploadAadharPhotos(
-                      aadhaarNumber: widget.aadharNumber,
-                      ppoNumber: widget.ppoNumber,
-                      mobileNumber: widget.mobileNumber,
-                      addressEnter: widget.addressEnter,
-                      gender: widget.gender,
-                      fullName: widget.fullName,
-                      lastSubmit: "",
+                if (shouldNavigate) {
+                  // Go back one screen
+                  Navigator.of(context).pop();
+                } else if (shouldNavigateToUploadAadhar) {
+                  // Navigate to UploadAadharPhotos screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UploadAadharPhotos(
+                        aadhaarNumber: widget.aadharNumber,
+                        ppoNumber: widget.ppoNumber,
+                        mobileNumber: widget.mobileNumber,
+                        addressEnter: widget.addressEnter,
+                        gender: widget.gender,
+                        fullName: widget.fullName,
+                        lastSubmit: "",
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               child: const Text('Ok', style: TextStyle(color: Colors.white)),
             ),
@@ -369,32 +449,6 @@ class _AadharVerificationKYCScreenState
                 ),
               )),
               const SizedBox(height: 20),
-
-              // Center(
-              //   child: ElevatedButton(
-              //     onPressed: isVerifyingAadharLoading ? null : verifyAadhar,
-              //     style: ElevatedButton.styleFrom(
-              //       backgroundColor: Color.fromARGB(255, 27, 107, 212),
-              //       foregroundColor: Colors.black,
-              //       shape: RoundedRectangleBorder(
-              //         borderRadius: BorderRadius.circular(30),
-              //       ),
-              //       padding: const EdgeInsets.symmetric(
-              //           horizontal: 40, vertical: 10),
-              //     ),
-              //     child: isVerifyingAadharLoading
-              //         ? const CircularProgressIndicator(color: Colors.white)
-              //         : Text(
-              //             "Verify Your Aadhar Number\nआधार क्रमांकाची पडताळणी करा",
-              //             style: const TextStyle(
-              //               fontSize: 18,
-              //               fontWeight: FontWeight.bold,
-              //               color: Colors.white,
-              //             ),
-              //           ),
-              //   ),
-              // ),
-
               Center(
                 child: !isVerificationSuccessful
                     ? ElevatedButton(

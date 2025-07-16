@@ -3,12 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:nagpur_mahanagarpalika/KYC_Screens/response_screen.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_compress/video_compress.dart';
 
 class DeclarationPageScreen extends StatefulWidget {
   final String ppoNumber;
@@ -149,32 +147,6 @@ class _DeclarationPageScreenState extends State<DeclarationPageScreen> {
     });
 
     try {
-      final compressedVideo = await VideoCompress.compressVideo(
-        widget.videoPath,
-        quality: VideoQuality.LowQuality,
-        deleteOrigin: false,
-      );
-
-      if (compressedVideo == null ||
-          compressedVideo.filesize! > 10 * 1024 * 1024) {
-        setState(() {
-          isLoading = false; // Hide loader
-        });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResponseScreen(
-              message: "Video is too large. Please record a smaller video.",
-              success: false,
-            ),
-          ),
-        );
-        return;
-      }
-
-      final videoFile = File(compressedVideo.path!);
-      // File compressedFile = await compressImage(widget.imagePath);
-
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('https://nagpurpensioner.altwise.in/api/aadhar/submit'),
@@ -199,12 +171,12 @@ class _DeclarationPageScreenState extends State<DeclarationPageScreen> {
       // request.fields['Note1'] = widget.inputFieldOneValue;
       // request.fields['Note2'] = widget.selectedDropdownValue ?? "";
 
-      request.files.add(await http.MultipartFile.fromPath(
-        'KycVideo',
-        videoFile.path,
-        filename: basename(videoFile.path),
-        contentType: MediaType('video', 'mp4'),
-      ));
+      // request.files.add(await http.MultipartFile.fromPath(
+      //   'KycVideo',
+      //   videoFile.path,
+      //   filename: basename(videoFile.path),
+      //   contentType: MediaType('video', 'mp4'),
+      // ));
 
       // request.files.add(await http.MultipartFile.fromPath(
       //   'Selfie',
